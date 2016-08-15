@@ -1,0 +1,248 @@
+/*
+ * To change this template, choose Tools | Templates
+ * and open the template in the editor.
+ */
+
+/*
+ * view_companies.java
+ *
+ * Created on 7 Jul, 2015, 1:15:06 PM
+ */
+
+package jobportal;
+
+/**
+ *
+ * @author abhilasha
+ */import java.sql.*;
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.*;
+import java.io.*;
+public class view_companies extends javax.swing.JFrame implements ActionListener {
+Connection conn;
+ Statement stmt;
+  Statement stmt1;
+  Statement stmt2;
+ ResultSet rs;
+  ResultSet rs1;
+   ResultSet rs2;
+String email,j_id;
+JPanel p1=new JPanel();
+JPanel p2=new JPanel();
+JPanel p3=new JPanel();
+JPanel panel[]=new JPanel[1000];
+JButton b[]=new JButton[1000];
+int c=0,s=0;
+String user_id[]=new String[1000];
+JScrollPane sp=new JScrollPane(p1);
+    /** Creates new form view_companies */
+    public view_companies() {
+        initComponents();
+                      setLayout(new GridLayout(1,1));
+p1.setLayout(new GridLayout(1000,1));
+
+        String column[]={"User-id","Employer Name","Company Name","Company website","contact","Delete"};
+
+
+String employer_name[]=new String[1000];
+String company_name[]=new String[1000];
+String company_website[]=new String[1000];
+String contact[]=new String[1000];
+
+ String arr[][]=new String[1000][1000];
+
+  p3.setLayout(new FlowLayout());
+    JLabel l1=new JLabel("Registered Companies");
+    l1.setFont(new Font("arial",Font.BOLD,30));
+    p3.add(l1);
+    p1.add(p3);
+
+     p2.setLayout(new GridLayout(1,8));
+     for(int i=0;i<6;i++)
+     {
+         JLabel l=new JLabel(column[i]);
+         l.setFont(new Font("arial",Font.BOLD,20));
+       p2.add(l);
+     }
+p1.add(p2);
+     try
+         {
+            Class.forName("sun.jdbc.odbc.JdbcOdbcDriver");
+            conn=DriverManager.getConnection("jdbc:odbc:seeker");
+            System.out.println("connected");
+            stmt=conn.createStatement();
+           rs=stmt.executeQuery("select * from employer");
+           while(rs.next())
+           {
+   user_id[c]=rs.getString("email");
+    employer_name[c]=rs.getString("emp_name");
+    company_name[c]=rs.getString("comp_name");
+   company_website[c]=rs.getString("comp_web");
+
+    contact[c]=rs.getString("contact_no");
+
+    c++;
+           }
+     for(int i=0;i<c;i++)
+     {
+         arr[i][0]=user_id[i];
+          arr[i][1]=employer_name[i];
+            arr[i][2]=company_name[i];
+         arr[i][3]=company_website[i];
+
+         arr[i][4]=contact[i];
+
+
+     }
+
+       for(int i=0;i<c;i++)
+           {
+           panel[i]=new JPanel();
+
+           panel[i].setLayout(new GridLayout(1,10));
+               for(int k=0;k<5;k++)
+
+               {
+
+                       panel[i].add(new JLabel(arr[i][k]));
+
+
+
+          }
+
+           b[i]=    new JButton("Delete");
+
+
+
+            panel[i].add(b[i]);
+
+
+
+p1.add(panel[i]);
+           }
+ add(sp);
+
+
+
+
+     }
+           catch(SQLException se)
+     {
+     System.out.println(se);
+
+    }
+     catch(ClassNotFoundException ce)
+     {
+         System.out.println(ce);
+     }
+for(int i=0;i<c;i++)
+    b[i].addActionListener(this);
+    }
+    
+    
+    public void actionPerformed(ActionEvent ae)
+    {
+  for(int i=0;i<c;i++)
+        {
+            if(ae.getSource()==b[i])
+            {
+               try
+         {
+            Class.forName("sun.jdbc.odbc.JdbcOdbcDriver");
+            conn=DriverManager.getConnection("jdbc:odbc:seeker");
+            System.out.println("connected");
+            stmt=conn.createStatement();
+           rs=stmt.executeQuery("select * from employer");
+           while(rs.next())
+           {
+               String str=rs.getString("email");
+               if(str.equals(user_id[i]))
+                   s=rs.getInt("ID");
+           }
+               stmt.executeUpdate("delete * from employer where [ID]="+s);
+                stmt1=conn.createStatement();
+               rs1=stmt1.executeQuery("select * from job");
+               while(rs1.next())
+               {
+                   String str=rs1.getString("email_id");
+                   if(str.equals(user_id[i]))
+                   {
+                       s=rs1.getInt("ID");
+System.out.println(s);
+                        stmt1.executeUpdate("delete * from job where [ID]="+s);
+
+                   }
+
+
+
+
+               }
+
+
+
+              p1.remove(panel[i]);
+            p1.validate();
+            remove(sp);
+            sp.validate();
+
+            sp=new JScrollPane(p1);
+            add(sp);
+            validate();
+
+           }
+
+              catch(SQLException se)
+     {
+     System.out.println(se);
+
+    }
+     catch(ClassNotFoundException ce)
+     {
+         System.out.println(ce);
+     }
+            }
+
+        }
+    }
+
+    /** This method is called from within the constructor to
+     * initialize the form.
+     * WARNING: Do NOT modify this code. The content of this method is
+     * always regenerated by the Form Editor.
+     */
+    @SuppressWarnings("unchecked")
+    // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
+    private void initComponents() {
+
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+
+        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
+        getContentPane().setLayout(layout);
+        layout.setHorizontalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 1034, Short.MAX_VALUE)
+        );
+        layout.setVerticalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 486, Short.MAX_VALUE)
+        );
+
+        pack();
+    }// </editor-fold>//GEN-END:initComponents
+
+    /**
+    * @param args the command line arguments
+    */
+    public static void main(String args[]) {
+        java.awt.EventQueue.invokeLater(new Runnable() {
+            public void run() {
+                new view_companies().setVisible(true);
+            }
+        });
+    }
+
+    // Variables declaration - do not modify//GEN-BEGIN:variables
+    // End of variables declaration//GEN-END:variables
+
+}
